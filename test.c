@@ -6,7 +6,7 @@
 #include <sys/mman.h>
 #define MEM_DEVICE "/dev/mem"
 #define MEM_ADDR 0xfe600008
-#define MEM_SIZE 8
+#define MEM_SIZE 4
 unsigned int random_array[30] = {
     3116728519, 1294839210, 568540443, 4157096105, 746286261,
     2760624277, 953778306, 685758008, 3597367985, 920508071,
