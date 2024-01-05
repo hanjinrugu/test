@@ -6,7 +6,7 @@
 #include <sys/mman.h>
 #define MEM_DEVICE "/dev/mem"
 #define MEM_ADDR 0xfe600000
-#define MEM_SIZE 8
+#define MEM_SIZE 4096
 unsigned int random_array[30] = {
     3116728519, 1294839210, 568540443, 4157096105, 746286261,
     2760624277, 953778306, 685758008, 3597367985, 920508071,
@@ -130,11 +130,10 @@ int main()
     }
     else if (strcmp(cmd, "t") == 0)
     {
-      for (int k = 1; k < 30; k++)
+      for (int k = 0; k < 30; k++)
       {
-        printf("Value at physical address 0x%x\n", MEM_ADDR | k << 3);
         devmem_write(k << 3, random_array[k]);
-        // devmem_read(k << 3, random_array[k]);
+        devmem_read(k << 3, random_array[k]);
       }
     }
     else if (strcmp(cmd, "q") == 0)
