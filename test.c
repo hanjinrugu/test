@@ -130,7 +130,7 @@ int main()
     }
     else if (strcmp(cmd, "t") == 0)
     {
-      for (int k = 0; k < 30; k++)
+      for (int k = 1; k < 30; k++)
       {
         devmem_write(k << 3, random_array[k]);
         devmem_read(k << 3, random_array[k]);
