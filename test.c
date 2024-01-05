@@ -35,7 +35,7 @@ void devmem_read(unsigned int offset, unsigned int value)
   }
 
   int read_value = *(int *)mapped_mem;
-  printf("Value at physical address 0x%x: %x\n", MEM_ADDR, read_value);
+  printf("Value at physical address 0x%x: %x\n", MEM_ADDR | offset, read_value);
 
   if (munmap(mapped_mem, MEM_SIZE) == -1)
   {
@@ -56,7 +56,7 @@ void devmem_write(unsigned int offset, unsigned int write_value)
     exit(0);
   }
 
-  mapped_mem = mmap(NULL, MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, MEM_ADDR + offset);
+  mapped_mem = mmap(NULL, MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, MEM_ADDR | offset);
   if (mapped_mem == MAP_FAILED)
   {
     perror("Error mapping memory");
@@ -65,7 +65,7 @@ void devmem_write(unsigned int offset, unsigned int write_value)
   }
 
   *(int *)mapped_mem = write_value;
-  printf("Write value at physical address 0x%x: %x\n", MEM_ADDR, write_value);
+  printf("Write value at physical address 0x%x: %x\n", MEM_ADDR | offset, write_value);
 
   if (munmap(mapped_mem, MEM_SIZE) == -1)
   {
