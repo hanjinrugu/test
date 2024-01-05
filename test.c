@@ -132,6 +132,7 @@ int main()
     {
       for (int k = 1; k < 30; k++)
       {
+          printf("Value at physical address 0x%x", MEM_ADDR | k << 3);
         devmem_write(k << 3, random_array[k]);
         devmem_read(k << 3, random_array[k]);
       }
