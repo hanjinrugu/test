@@ -26,7 +26,7 @@ void devmem_read(unsigned int offset, unsigned int value)
     exit(0);
   }
 
-  mapped_mem = mmap(NULL, MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, MEM_ADDR + offset);
+  mapped_mem = mmap(NULL, MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, MEM_ADDR | offset);
   if (mapped_mem == MAP_FAILED)
   {
     perror("Error mapping memory");
