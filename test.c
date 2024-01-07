@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #define MEM_DEVICE "/dev/mem"
-#define MEM_ADDR 0xfe600008
+#define MEM_ADDR 0xfe600000
 #define MEM_SIZE 4096UL
 #define MEM_MASK (MEM_SIZE - 1)
 unsigned int random_array[30] = {
@@ -131,11 +131,11 @@ int main()
     }
     else if (strcmp(cmd, "t") == 0)
     {
-      // for (int k = 0; k < 30; k++)
-      //{
-      devmem_write(0, random_array[0]);
-      devmem_read(0, random_array[0]);
-      //}
+      for (int k = 0; k < 30; k++)
+      {
+        devmem_write(k >> 3, random_array[0]);
+        devmem_read(k >> 3, random_array[0]);
+      }
     }
     else if (strcmp(cmd, "q") == 0)
     {
