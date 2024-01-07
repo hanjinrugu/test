@@ -14,8 +14,8 @@ $(TARGET): $(SRC_O)
 $(SRC_O): $(SRC_C)
 	$(CC) $(CFLAGS) -c $(SRC_C)
 
+run:
+	sudo ./$(TARGET)
+
 clean:
 	rm -f $(TARGET) $(SRC_O)
-
-run:
-	./$(TARGET)
