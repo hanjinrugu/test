@@ -1,7 +1,7 @@
 # Makefile for a simple C program
 
-SRC_C=main.c
-SRC_O=main.o
+SRC_C=test.c
+SRC_O=test.o
 CC=gcc
 CFLAGS=-Wall
 TARGET=main
