@@ -6,7 +6,8 @@
 #include <sys/mman.h>
 #define MEM_DEVICE "/dev/mem"
 #define MEM_ADDR 0xfe600008
-#define MEM_SIZE 4
+#define MEM_SIZE 4096UL
+#define MEM_MASK (MEM_SIZE - 1)
 unsigned int random_array[30] = {
     3116728519, 1294839210, 568540443, 4157096105, 746286261,
     2760624277, 953778306, 685758008, 3597367985, 920508071,
@@ -18,15 +19,15 @@ void devmem_read(unsigned int offset, unsigned int value)
 {
   int mem_fd;
   void *mapped_mem;
-
+  off_t target;
   mem_fd = open(MEM_DEVICE, O_RDWR | O_SYNC);
   if (mem_fd == -1)
   {
     perror("Error opening /dev/mem");
     exit(0);
   }
-
-  mapped_mem = mmap(NULL, MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, MEM_ADDR);
+  target = MEM_ADDR | offset;
+  mapped_mem = mmap(NULL, MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, target & ~MEM_MASK);
   if (mapped_mem == MAP_FAILED)
   {
     perror("Error mapping memory");
@@ -35,7 +36,7 @@ void devmem_read(unsigned int offset, unsigned int value)
   }
 
   int read_value = *(int *)mapped_mem;
-  printf("Value at physical address 0x%x: %x\n", MEM_ADDR | offset, read_value);
+  printf("Value at physical address 0x%x: %x\n", target, read_value);
 
   if (munmap(mapped_mem, MEM_SIZE) == -1)
   {
@@ -48,15 +49,15 @@ void devmem_write(unsigned int offset, unsigned int write_value)
 {
   int mem_fd;
   void *mapped_mem;
-
+  off_t target;
   mem_fd = open(MEM_DEVICE, O_RDWR | O_SYNC);
   if (mem_fd == -1)
   {
     perror("Error opening /dev/mem");
     exit(0);
   }
-
-  mapped_mem = mmap(NULL, MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, MEM_ADDR | offset);
+  target = MEM_ADDR | offset;
+  mapped_mem = mmap(NULL, MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, target & ~MEM_MASK);
   if (mapped_mem == MAP_FAILED)
   {
     perror("Error mapping memory");
@@ -65,7 +66,7 @@ void devmem_write(unsigned int offset, unsigned int write_value)
   }
 
   *(int *)mapped_mem = write_value;
-  printf("Write value at physical address 0x%x: %x\n", MEM_ADDR | offset, write_value);
+  printf("Write value at physical address 0x%x: %x\n", MEM_ADDR | offset, *(int *)mapped_mem);
 
   if (munmap(mapped_mem, MEM_SIZE) == -1)
   {
