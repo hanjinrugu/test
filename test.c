@@ -18,7 +18,7 @@ unsigned int random_array[30] = {
 void devmem_read(unsigned int offset, unsigned int value)
 {
   int mem_fd;
-  void *mapped_mem;
+  void *mapped_mem, *virt_addr;
   off_t target;
   mem_fd = open(MEM_DEVICE, O_RDWR | O_SYNC);
   if (mem_fd == -1)
@@ -34,8 +34,8 @@ void devmem_read(unsigned int offset, unsigned int value)
     close(mem_fd);
     exit(0);
   }
-
-  int read_value = *(int *)mapped_mem;
+  virt_addr = mapped_mem + (target & MEM_MASK);
+  unsigned long read_value = *((unsigned long *)virt_addr);
   printf("Value at physical address 0x%x: %x\n", target, read_value);
 
   if (munmap(mapped_mem, MEM_SIZE) == -1)
@@ -45,10 +45,10 @@ void devmem_read(unsigned int offset, unsigned int value)
 
   close(mem_fd);
 }
-void devmem_write(unsigned int offset, unsigned int write_value)
+void devmem_write(unsigned int offset, unsigned long write_value)
 {
   int mem_fd;
-  void *mapped_mem;
+  void *mapped_mem, *virt_addr;
   off_t target;
   mem_fd = open(MEM_DEVICE, O_RDWR | O_SYNC);
   if (mem_fd == -1)
@@ -64,9 +64,10 @@ void devmem_write(unsigned int offset, unsigned int write_value)
     close(mem_fd);
     exit(0);
   }
-
-  *(int *)mapped_mem = write_value;
-  printf("Write value at physical address 0x%x: %x\n", MEM_ADDR | offset, *(int *)mapped_mem);
+  virt_addr = mapped_mem + (target & MEM_MASK);
+  *((unsigned long *)virt_addr) = write_value;
+  unsigned long result = *((unsigned long *)virt_addr);
+  printf("Write value at physical address 0x%x: %x\n", MEM_ADDR | offset, result);
 
   if (munmap(mapped_mem, MEM_SIZE) == -1)
   {
