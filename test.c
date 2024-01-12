@@ -133,8 +133,8 @@ int main()
     {
       for (int k = 0; k < 30; k++)
       {
-        devmem_write(k << 3, random_array[0]);
-        devmem_read(k << 3, random_array[0]);
+        devmem_write(k << 3, random_array[k]);
+        devmem_read(k << 3, random_array[k]);
       }
     }
     else if (strcmp(cmd, "q") == 0)
